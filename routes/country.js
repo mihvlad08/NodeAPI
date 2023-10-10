@@ -12,13 +12,18 @@ router.get('/countries/', async(req, res) => {
         const sendDate = (new Date()).getTime();
         const countries = await CountryModel.find({})
         const receiveDate = (new Date()).getTime();
+        const { key } = req.query;
 
-        const response = {
-            time: (receiveDate - sendDate + 4) + 'ms',
-            ...countries
-        };
+        if(!await validateKey(key)) {
+            res.status(404).json({Error: 'Invalid or missing API key'})
+        } else {
+            const response = {
+                time: (receiveDate - sendDate + 4) + 'ms',
+                ...countries
+            };
 
-        res.status(200).json(response);
+            res.status(200).json(response);
+        }
     } catch (err) {
         res.status(500).json({err: err.message})
     }
@@ -32,7 +37,7 @@ router.get('/country/:countryCode', async(req, res) => {
         const { key } = req.query;
 
         if(!await validateKey(key)) {
-            res.status(404).json({Error: 'Invalid or missing key'})
+            res.status(404).json({Error: 'Invalid or missing API key'})
         } else {
 
             const code = req.params['countryCode'];
@@ -58,16 +63,22 @@ router.post('/country/', async(req, res) => {
         const sendDate = (new Date()).getTime();
         const country = await CountryModel.create(req.body);
         const receiveDate = (new Date()).getTime();
+        const { key } = req.query;
 
-        res.status(200)
+        if(!await validateKey(key)) {
+            res.status(404).json({Error: 'Invalid or missing API key'})
+        } else {
+            res.status(200)
 
-        const responseBody = {
-            "message": 'Country has been created: ' + country.name + ', with the capital city of ' + country.capital +
-                ". ID:" + country._id + '.',
-            "time": (receiveDate - sendDate + 4) + 'ms.'
+            const responseBody = {
+                "message": 'Country has been created: ' + country.name + ', with the capital city of ' + country.capital +
+                    ". ID:" + country._id + '.',
+                "time": (receiveDate - sendDate + 4) + 'ms.'
+            }
+
+            res.json(responseBody)
         }
 
-        res.json(responseBody)
 
     } catch (err) {
         res.status(500).json({error: err.message})

@@ -2,6 +2,8 @@ const express = require('express');
 const CountryModel = require('../models/countryModel');
 const router = express.Router();
 
+const validateKey = require('../services/keyHandler');
+
 module.exports = router;
 
 // GET /countries/
@@ -27,18 +29,24 @@ router.get('/country/:countryCode', async(req, res) => {
     // TODO: Implement caching with Redis for all GET routes -> https://www.youtube.com/watch?v=ztLsihiCHic
     try {
         const sendDate = (new Date()).getTime();
+        const { key } = req.query;
 
-        const code = req.params['countryCode'];
-        const country = await CountryModel.findOne({ countryCode: code })
+        if(!await validateKey(key)) {
+            res.status(404).json({Error: 'Invalid or missing key'})
+        } else {
 
-        const receiveDate = (new Date()).getTime();
+            const code = req.params['countryCode'];
+            const country = await CountryModel.findOne({countryCode: code})
 
-        const response = {
-            time: (receiveDate - sendDate + 4) + 'ms',
-            ...country.toObject(),
-        };
+            const receiveDate = (new Date()).getTime();
 
-        res.status(200).json(response)
+            const response = {
+                time: (receiveDate - sendDate + 4) + 'ms',
+                ...country.toObject(),
+            };
+
+            res.status(200).json(response)
+        }
     } catch (err) {
         res.status(500).json({err: err.message})
     }

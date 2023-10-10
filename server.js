@@ -19,6 +19,9 @@ app.use(mainRoute)
 const countryRoute = require('./routes/country');
 app.use(countryRoute);
 
+const masterRoute = require('./routes/master-route');
+app.use(masterRoute);
+
 // let country = 'RU'
 
 // async function logMovies() {

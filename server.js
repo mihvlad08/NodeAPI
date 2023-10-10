@@ -5,7 +5,7 @@ app.listen(3000, () => {
     console.log('Listening on port 3000');
 })
 
-app.get('/', (res, req) => {
+app.get('/', (req, res) => {
     res.status(200).json('API Connection successfully established.')
 })
 

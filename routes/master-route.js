@@ -9,6 +9,8 @@ router.get('/keys/', async(req, res) => {
     try {
         const { key } = req.query;
 
+        if (key !== process.env.ROOT_APIKEY) {res.status(404).json({Error: "Invalid or Missing Key"})}
+
         const keys = await userKeyModel.find({});
         res.status(200).json(keys);
 

@@ -1,6 +1,6 @@
 async function validateKey(apikey) {
     try {
-        const response = await fetch('http://127.0.0.1:3000/keys');
+        const response = await fetch(`http://127.0.0.1:3000/keys?key=${process.env.ROOT_APIKEY}`);
         if (!response.ok) {
             return false;
         }

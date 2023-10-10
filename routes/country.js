@@ -22,9 +22,13 @@ router.get('/country/:countryCode', async(req, res) => {
         const code = req.params['countryCode'];
         const country = await CountryModel.findOne({ countryCode: code })
         var receiveDate = (new Date()).getTime();
-        var responseTimeMs = receiveDate - sendDate;
-        country.push({'responseTimeMs': responseTimeMs});
-        res.status(200).json(country)
+
+        const response = {
+            time: (receiveDate - sendDate + 4) + 'ms',
+            ...country.toObject(),
+        };
+
+        res.status(200).json(response)
     } catch (err) {
         res.status(500).json({err: err.message})
     }

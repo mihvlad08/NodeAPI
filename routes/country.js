@@ -27,8 +27,10 @@ router.get('/country/:countryCode', async(req, res) => {
     // TODO: Implement caching with Redis for all GET routes -> https://www.youtube.com/watch?v=ztLsihiCHic
     try {
         const sendDate = (new Date()).getTime();
+
         const code = req.params['countryCode'];
         const country = await CountryModel.findOne({ countryCode: code })
+
         const receiveDate = (new Date()).getTime();
 
         const response = {
@@ -51,13 +53,13 @@ router.post('/country/', async(req, res) => {
 
         res.status(200)
 
-        const body = {
+        const responseBody = {
             "message": 'Country has been created: ' + country.name + ', with the capital city of ' + country.capital +
                 ". ID:" + country._id + '.',
             "time": (receiveDate - sendDate + 4) + 'ms.'
         }
 
-        res.json(body)
+        res.json(responseBody)
 
     } catch (err) {
         res.status(500).json({error: err.message})
